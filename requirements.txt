@@ -1,0 +1,2 @@
+python-telegram-bot==21.10
+img2pdf==0.5.1
