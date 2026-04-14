@@ -1,35 +1,26 @@
 import os
 import asyncio
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
 # 1. Configuration
 TOKEN = os.environ.get("BOT_TOKEN")
-# Redirect link - using your bot link as the destination
-HUB_LINK = "https://t.me/PlayzoneHub_bot"
-SUPPORT_USER = "@maxpromarketer"
 
-# 2. Keyboards
+# 2. Keyboards - Purely internal educational navigation
 def main_menu_keyboard():
     keyboard = [
-        [KeyboardButton("🎮 Enter Play Zone")],
-        [KeyboardButton("📝 Game Tips"), KeyboardButton("🎁 Exclusive Offers")],
-        [KeyboardButton("⚖️ Privacy Policy"), KeyboardButton("🆘 Support")]
+        [KeyboardButton("🎮 Game Mechanics"), KeyboardButton("📝 Strategy Guides")],
+        [KeyboardButton("🛡️ Fair Play Rules"), KeyboardButton("⚖️ Privacy Policy")]
     ]
     return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-def hub_inline_button():
-    keyboard = [[InlineKeyboardButton("🚀 Join Play Zone Hub", url=HUB_LINK)]]
-    return InlineKeyboardMarkup(keyboard)
-
 # 3. Logic Handlers
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Neutral, educational welcome message for Ad Approval
     welcome_text = (
         "👋 *Welcome to the Play Zone Hub!*\n\n"
-        "Your central source for digital entertainment, daily games, and strategic tips. "
-        "Discover new ways to play and stay updated with our latest community offers.\n\n"
-        "Join thousands of players and start exploring today!"
+        "Your dedicated educational tool for mastering game mechanics and strategies. "
+        "Our goal is to help you improve your skills through data-driven tips and fair play guides.\n\n"
+        "Select a category below to start learning!"
     )
     await update.message.reply_text(
         welcome_text, 
@@ -40,50 +31,48 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
     
-    if text == "🎮 Enter Play Zone":
-        await update.message.reply_text(
-            "✅ *Access Granted.*\n\nClick below to enter the Hub and explore our current collection of games and promotions:",
-            reply_markup=hub_inline_button(),
-            parse_mode='Markdown'
-        )
-
-    elif text == "📝 Game Tips":
+    if text == "🎮 Game Mechanics":
         msg = (
-            "📝 *Gaming Insights & Tips*\n\n"
-            "Boost your performance with our daily insights:\n"
-            "• Optimized gameplay strategies\n"
-            "• Understanding game mechanics\n"
-            "• Community-voted top picks"
+            "⚙️ *Understanding Game Mechanics*\n\n"
+            "Mastering the 'rules of the engine' is the first step to winning. We analyze:\n"
+            "• Physics and movement timing\n"
+            "• Resource management loops\n"
+            "• Probability and RNG factors"
         )
         await update.message.reply_text(msg, parse_mode='Markdown')
 
-    elif text == "🎁 Exclusive Offers":
+    elif text == "📝 Strategy Guides":
         msg = (
-            "🎁 *Community Promotions*\n\n"
-            "We regularly update our offers to bring more fun to our players. "
-            "Check the Play Zone Hub daily for exclusive limited-time rewards!"
+            "📝 *Advanced Strategy Guides*\n\n"
+            "Elevate your playstyle with these core concepts:\n"
+            "• Map awareness and positioning\n"
+            "• Effective counter-play techniques\n"
+            "• Long-term vs. Short-term objectives"
+        )
+        await update.message.reply_text(msg, parse_mode='Markdown')
+
+    elif text == "🛡️ Fair Play Rules":
+        msg = (
+            "🛡️ *Fair Play & Ethics*\n\n"
+            "A sustainable gaming community relies on integrity:\n"
+            "1. Respect all players.\n"
+            "2. Avoid unauthorized third-party tools.\n"
+            "3. Report bugs to help improve the experience for everyone."
         )
         await update.message.reply_text(msg, parse_mode='Markdown')
 
     elif text == "⚖️ Privacy Policy":
         await update.message.reply_text(
-            "Play Zone Hub values your privacy. We do not share user data or personal information. "
-            "Enjoy a secure entertainment experience."
+            "Play Zone Hub is an educational tool. We do not collect, store, or share any personal user data."
         )
 
-    elif text == "🆘 Support":
-        await update.message.reply_text(
-            f"Need assistance with the hub or our services?\n\n"
-            f"Contact Support: {SUPPORT_USER}"
-        )
-
-# --- ASYNC MAIN FOR PYTHON 3.14 (Render Background Worker) ---
+# --- ASYNC MAIN FOR RENDER WORKER ---
 async def main():
     if not TOKEN:
-        print("ERROR: BOT_TOKEN variable is missing!")
+        print("ERROR: BOT_TOKEN is missing!")
         return
 
-    print("Play Zone Hub starting...")
+    print("Play Zone Hub Educational Bot starting...")
     application = ApplicationBuilder().token(TOKEN).build()
     
     application.add_handler(CommandHandler("start", start))
